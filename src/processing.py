@@ -1,9 +1,9 @@
-def filter_by_state(list_of_dicts: list, status_for_key: str = "EXECUTED") -> list:
+def filter_by_state(list_of_dicts: list, state_for_key: str = "EXECUTED") -> list:
     """Функция принимает список словарей и выводит новый список словарей, по указанному ключу 'state',
     если ключ не был дан на вход функции, будет выведен список по ключу по умолчанию"""
     new_list = []
     for state in list_of_dicts:
-        if state.get("state") == status_for_key:
+        if state.get("state") == state_for_key:
             new_list.append(state)
             return new_list
 
