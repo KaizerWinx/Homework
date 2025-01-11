@@ -8,7 +8,7 @@ def filter_by_currency(transactions: list, currency: str) -> iter:
     yield result
 
 
-def transaction_descriptions(transactions: list) -> str:
+def transaction_descriptions(transactions: list) -> iter:
     """
     Генератор, который принимает список словарей с транзакциями
      и возвращает описание каждой операции по очереди
