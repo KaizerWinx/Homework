@@ -5,7 +5,7 @@ def filter_by_currency(transactions: list, currency: str) -> iter:
     транзакции, где валюта операции соответствует заданной
     """
     result = list(filter(lambda x: x["operationAmount"]["currency"]["code"] == currency, transactions))
-    yield result
+    return result
 
 
 def transaction_descriptions(transactions: list) -> iter:
