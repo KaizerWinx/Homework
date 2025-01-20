@@ -1,34 +1,35 @@
-from typing import Generator
+from typing import Generator, Iterator
 
 
-def filter_by_currency(transactions: list, currency: str) -> Generator:
+def filter_by_currency(transactions: list, currency_code: str) -> Iterator[dict]:
     """
-    :param transactions: список транзакций
-    :param currency: валюта
-    Функция получает на вход список транзакций и возвращает отфильтрованные значения ввиде генератора
+    Функция принимает на вход список транзаций и возвращает итератор
+    транзации с заднным 'code' равный 'currency_code'
     """
-    result = list(filter(lambda x: x["operationAmount"]["currency"]["code"] == currency, transactions))
-    yield result
+    return filter(lambda x: x["operationAmount"]["currency"]["code"] == currency_code, transactions)
 
 
 def transaction_descriptions(transactions: list) -> Generator:
     """
-    :param transactions: список транзакций
-    Функция получает на вход список транзакций и возвращает описание каждой транзакции ввиде генератора
+    Функция принимает список транзаций и возвращает описание
+    каждой операции по очереди.
     """
-    result = map(lambda description: description["description"], transactions)
-    for i in result:
-        yield i
+
+    for operation in transactions:
+        yield operation["description"]
 
 
-def card_number_generator(start: int, end: int) -> Generator:
+def card_number_generator(start: int, stop: int) -> Generator:
     """
-    :param start: начальное значение
-    :param end: конечное значение (на 1 больше фактического)
-    Функция принимает на вход начальное и конечное значение диапазона и генерирует номера карт в этом диапазоне.
-    На выход подается генератор.
+    Функция генерирует номер карт в заданном диапазоне от "start" до "stop"
+    в формате "XXXX XXXX XXXX XXXX".
     """
-    card_number = ""
-    for i in range(start, end):
-        card_number = "0" * (16 - len(str(i))) + str(i)
-        yield f"{card_number[:4]} {card_number[4:8]} {card_number[8:12]} {card_number[12:17]}"
+
+    if type(start) is int and type(stop) is int and start < stop:
+        card_number = "0" * 16
+        for number in range(start, stop + 1):
+            len_card_number = len(card_number) - len(str(number))
+            result = card_number[:len_card_number] + str(number)
+            yield f"{result[:4]} {result[4:8]} {result[8:12]} {result[12:]}"
+    else:
+        yield "Введены некорректные данные"

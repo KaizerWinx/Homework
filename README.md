@@ -10,7 +10,7 @@
 ## Установка:
 1. Клонируйте репозиторий с "Github":
 ```
-https://github.com/Alex-AM138/MyProject_1.git
+git@github.com:KaizerWinx/Homework.git
 ```
 2. Установите зависимости:
 ```
