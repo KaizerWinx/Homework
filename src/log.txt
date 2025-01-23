@@ -1,0 +1,19 @@
+func error: division by zero, inputs: (1, 1), {}
+func ok
+func error: division by zero, inputs: (1, 1), {}
+func ok
+filter_by_currency ok
+filter_by_currency ok
+transaction_descriptions ok
+transaction_descriptions ok
+card_number_generator ok
+card_number_generator ok
+get_mask_card_number ok
+get_mask_account ok
+filter_by_state ok
+sort_by_date ok
+get_mask_card_number ok
+mask_account_card ok
+get_mask_account ok
+mask_account_card ok
+get_date ok
