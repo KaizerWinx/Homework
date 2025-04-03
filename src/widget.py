@@ -1,34 +1,35 @@
-import src.decorators as decorators
-from src.masks import get_mask_account, get_mask_card_number
+import pytest
+from src.widget import get_date, mask_account_card
 
 
-@decorators.log(filename="log.txt")
-def mask_account_card(input: str) -> str:
-    """
-    :param input: строка с типом данных и номером карты или счета (например Visa Platinum 7000792289606361)
-    Функция принимает на вход строку, содержащую тип данных (название карты или счет) и номер карты или счета
-    и возвращает замаскированный номер с типом данных
-        # Пример для карты
-        Visa Platinum 7000792289606361 # входной аргумент
-        Visa Platinum 7000 79** **** 6361 # выход функции
-        # Пример для счета
-        Счет 73654108430135874305 # входной аргумент
-        Счет **4305 # выход функции
-    """
-    if "Счет" in input:
-        return f"{input[0:len(input) - 20]}{get_mask_account(input[-20:])}"
-    else:
-        return f"{input[0:len(input) - 16]}{get_mask_card_number(input[-16:])}"
+@pytest.mark.parametrize(
+    "value_account_or_card, expected",
+    [
+        ("Maestro 1596837868705199", "Maestro 1596 83** **** 5199"),
+        ("Счет 64686473678894779589", "Счет **9589"),
+        ("MasterCard 7158300734726758", "MasterCard 7158 30** **** 6758"),
+        ("Счет 35383033474447895560", "Счет **5560"),
+        ("Visa Classic 6831982476737658", "Visa Classic 6831 98** **** 7658"),
+        ("Visa Platinum 8990922113665229", "Visa Platinum 8990 92** **** 5229"),
+        ("Visa Gold 5999414228426353", "Visa Gold 5999 41** **** 6353"),
+        ("Счет 73654108430135874305", "Счет **4305"),
+    ],
+)
+def test_mask_account_card(value_account_or_card: str, expected: str) -> None:
+    assert mask_account_card(value_account_or_card) == expected
+
+@pytest.fixture
+def date() -> str:
+    return "2024-03-11T02:26:18.671407"
 
 
-@decorators.log(filename="log.txt")
-def get_date(input_date: str) -> str:
-    """
-    функция принимаемает на вход строку даты в формате "2024-03-11T02:26:18.671407"
-     и возвращает строку с датой в формате "ДД.ММ.ГГГГ" ("11.03.2024").
-    """
-    splited_date = input_date.split("-")
-    splited_date.reverse()
-    splited_date[0] = splited_date[0][0:2]
-    formated_date = ".".join(splited_date)
-    return formated_date
+def test_get_date(date: str) -> None:
+    assert get_date(date) == "11.03.2024"
+
+
+def mask_account_card():
+    return None
+
+
+def get_date():
+    return None

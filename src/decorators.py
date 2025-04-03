@@ -1,49 +1,55 @@
-from collections.abc import Callable
+import pytest
+
+import src.decorators as decorators
 
 
-def log(filename: str = "") -> object:
+def test_log_decorator_file_function_error() -> None:
     """
-    :rtype: object
-    :param filename: имя файла с логами
-    Декоратор, записывающий результаты работы функции в файл или в консоль.
+    Ошибочный тест декоратора и запись в файл
     """
 
-    def decorator(func: Callable) -> object:
-        def wrapper(*args: str, **kwargs: int) -> object:
-            try:
-                # попытка выполнения декорируемой функции
-                result = func(*args, **kwargs)
-            except Exception as err:
-                # обработка исключения при выполнении декорируемой функции
-                try:
-                    # попытка открытия файла для записи лога
-                    file = open(filename, "a")
-                except FileNotFoundError:
-                    # обработка исключения при ошибке открытия файла
-                    # вывод ошибки выполнения декорируемой функции в консоль
-                    print(f"{func.__name__} error: {err}, inputs: {args}, {kwargs}\n")
-                else:
-                    # вывод лога ошибки выполнения декорируемой функции в файл
-                    file.write(
-                        f"{func.__name__} error: {err}, inputs: {args}, {kwargs}\n"
-                    )  # вывод лога в файл при ошибке
-                    file.close()
-                # исключение выбрасываемое при ошибке выполнения декорируемой функции
-                raise Exception(f"Function error: {err}")
-            else:
-                # код, выполняемый при успешном выполнении декорируемой функции
-                try:
-                    # попытка открытия файла для вывода лога
-                    file = open(filename, "a")
-                except FileNotFoundError:
-                    # обработка исключения при ошибке открытия файла
-                    # вывод лога в консоль при ошибке открытия файла
-                    print(f"{func.__name__} ok\n")
-                else:
-                    # вывод лога в файл при успешном открытии
-                    file.write(f"{func.__name__} ok\n")
-                    file.close()
-                return result
+    @decorators.log(filename="log.txt")
+    def func(a: int, b: int) -> float:
+        return 1 / (a - b)
 
-                return wrapper
-            return decorator
+    with pytest.raises(Exception):
+        func(1, 1)
+
+
+def test_log_decorator_file() -> None:
+    """
+    Успешно пройденный тест декоратора и запись в файл
+    """
+
+    @decorators.log(filename="log.txt")
+    def func(a: int, b: int) -> float:
+        return 1 / (a - b)
+
+    result = func(2, 1)
+    assert result == 1
+
+
+def test_log_decorator_console_func_error() -> None:
+    """
+    Ошибочный тест декоратора и вывод в консоль
+    """
+
+    @decorators.log()
+    def func(a: int, b: int) -> float:
+        return 1 / (a - b)
+
+    with pytest.raises(Exception):
+        func(1, 1)
+
+
+def test_log_decorator_console() -> None:
+    """
+    Успешно пройденный тест декоратора и вывод в консоль
+    """
+
+    @decorators.log()
+    def func(a: int, b: int) -> float:
+        return 1 / (a - b)
+
+    result = func(2, 1)
+    assert result == 1
